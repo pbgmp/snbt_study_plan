@@ -2,12 +2,14 @@ import json
 from datetime import datetime, timedelta
 
 def main():
-    benchmark_score = get_minimum_score()
-    skor_tryout = user_input_score()
-    level_of_competence(skor_tryout, benchmark_score)
-    check_input_score(skor_tryout)
-    day_differece = counts_days()
-    
+    benchmark_score = get_minimum_score() #run the function and store the value in benchmark_score
+    skor_tryout = user_input_score() #run the function to values about user try out score
+    check_input_score(skor_tryout) #for score 0, check if they want to do tryout now or not
+    level_of_competence(skor_tryout, benchmark_score) #categorize student tryout score into three level
+    day_difference, start_studying_date = counts_days() #count how many days left before exam
+    subtest_category = level_of_competence(skor_tryout, benchmark_score)
+    interval_time(start_studying_date, day_difference, subtest_category) #calculate retention interval based on subtest level
+
 
 def get_minimum_score():
     with open("program_university.json", "r") as file:
@@ -30,7 +32,8 @@ def get_minimum_score():
     
 def user_input_score():
     print("Tulis skor tryout SNBT terbaru. Apabila belum pernah tryout, maka isi angka 0.")
-    
+    print()
+
     questions = {
         "PU": "Kemampuan Penalaran Umum:",
         "PK": "Kemampuan Kuantitatif:",
@@ -40,6 +43,7 @@ def user_input_score():
         "LBE": "Literasi Bahasa Inggris:",
         "PM": "Penalaran Matematika:"
     }
+    print()
 
     skor_tryout = {}
     for key, prompt in questions.items():
@@ -63,37 +67,45 @@ def check_input_score(skor_tryout):
 
     """sorted_skor_tryout = sorted(skor_tryout.items(), key=lambda value: value[1])"""
 
-def level_of_competence(skor_tryout, get_minimum_score):
-    red_interval = []
-    yellow_interval = []
-    green_interval = []
-    
-    interval_by_color = {
-        "red_interval":[], 
-        "yellow_interval": [],
-        "green_interval": []
-        }
+def level_of_competence(skor_tryout, benchmark_score):
+    RED = []
+    YELLOW = []
+    GREEN = []
 
-    for subtest, score in skor_tryout.items():
-        score_percentile = float((score/get_minimum_score) * 100)
-        if score_percentile <= 59.0 :
-            color = "RED"
-            red_interval.append(subtest)
-        elif score_percentile > 59.0 and score_percentile <= 89.0 :
-            color = "YELLOW"
-            yellow_interval.append(subtest)
-        else:
-            color = "GREEN"
-            green_interval.append(subtest)
-   
-def counts_days():    
-    date_str = input("Kapan kamu mau mulai belajar untuk persiapan SNBT? (Isi dengan format HH-BB-TT)")
-    try:
-        start_studying_date = datetime.strptime(date_str, "%d-%m-%Y")
-    except:
-        print("Format salah. Mohon tulis tanggal dengan format HH-BB-TT (contoh: 12-12-2025)")
-        return
+    interval_by_color = {
+        "RED":[], 
+        "YELLOW": [],
+        "GREEN": []
+        }
     
+    for subtest, score in skor_tryout.items():
+        score_percentile = float((score/benchmark_score) * 100)
+        if score_percentile <= 59.0 :
+            RED.append(subtest)
+        elif score_percentile > 59.0 and score_percentile <= 89.0 :
+            YELLOW.append(subtest)
+        else:
+            GREEN.append(subtest)
+  
+    return {"RED": RED, "YELLOW": YELLOW, "GREEN": GREEN}
+ 
+def subtest_category(interval_by_color):
+    red_subtest= ', '.join(interval_by_color["RED"])
+    yellow_subtest= ', '.join(interval_by_color["YELLOW"])
+    green_subtest= ', '.join(interval_by_color["GREEN"])
+    subtest_sorted= ["red_subtest", "yellow_subtest", "green_subtest"]
+   
+
+def counts_days():    
+    while True:
+        print()
+        date_str = input("Kapan kamu mau mulai belajar untuk persiapan SNBT? (Isi dengan format HH-BB-TT)")
+        try:
+            start_studying_date = datetime.strptime(date_str, "%d-%m-%Y")
+            break
+        except:
+            print("Format salah. Mohon tulis tanggal dengan format HH-BB-TT (contoh: 12-12-2025)")
+
     exam_period_str = "23-04-2026"
     exam_period = datetime.strptime(exam_period_str, "%d-%m-%Y")
 
@@ -101,18 +113,31 @@ def counts_days():
     day_difference = difference.days
 
     print(f"Ada {day_difference} hari sebelum periode SNBT")
-    return day_difference
 
-def retention_interval(start_studying_date, day_difference):
-    interval_list= ["red_interval", "yellow_interval", "green_interval"]
+    return day_difference, start_studying_date
 
-    red_interval = timedelta(days=int(0.1 * day_difference))
-    yellow_interval = timedelta(days=int(0.15 * counts_days))
-    green_interval = timedelta(days=int(0.2 * counts_days))
+def interval_time(start_studying_date, day_difference, subtest_category):
+    
+    retention_interval= {
+        "RED": timedelta(days=int(0.1 * day_difference)), 
+        "YELLOW": timedelta(days=int(0.15 * day_difference)), 
+        "GREEN": timedelta(days=int(0.2 * day_difference))
+    }
 
-    study_schedule = start_studying_date + timedelta(days=1) + interval_list
+    current_day = datetime.now()
+    tomorrow = current_day + timedelta(days=1)
 
-    print("Berdasarkan skor try out dan target jurusan, maka kami merekomendasikan jadwal seperti ini:")
+    print()
+    print("STUDY PLAN")
+    print()
+    print("Setiap kamu belajar satu topik, review topik tersebut keesokan harinya.")
+    print(f"Contoh: Belajar PK hari {current_day.strftime('%d-%m-%Y')}, maka ulangi kembali pada tanggal {tomorrow.strftime('%d-%m-%Y')}")
+    print()
+    print(f"Untuk subtest {subtest_category['RED']}, ulangi setiap {retention_interval['RED'].days} hari.")
+    print(f"Untuk subtest {subtest_category['YELLOW']}, ulangi setiap {retention_interval['YELLOW'].days} hari. ")
+    print(f"Untuk subtest {subtest_category['GREEN']}, ulangi setiap {retention_interval['GREEN'].days} hari. ")
+
+
 
 if __name__ == '__main__':
     main()
