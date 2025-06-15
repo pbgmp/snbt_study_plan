@@ -1,0 +1,118 @@
+import json
+from datetime import datetime, timedelta
+
+def main():
+    benchmark_score = get_minimum_score()
+    skor_tryout = user_input_score()
+    level_of_competence(skor_tryout, benchmark_score)
+    check_input_score(skor_tryout)
+    day_differece = counts_days()
+    
+
+def get_minimum_score():
+    with open("program_university.json", "r") as file:
+        program_university = json.load(file)
+    
+    major_score = program_university["major_score"]
+
+    university = input("Apa universitas targetmu? ").strip().title()
+    user_major = input("Apa jurusan yang menjadi target utamamu? ").strip().title()
+    
+    with open("alias_major.json", "r") as file:
+        alias_major = json.load(file)
+    major_dict = alias_major.get(university, {})
+    major = major_dict.get(user_major, user_major)
+
+    benchmark_score = major_score[university][major]
+    print()
+    print(f"Dengan jurusan {major} di {university}, kamu setidaknya harus mencapai skor SNBT {benchmark_score}.")
+    return benchmark_score 
+    
+def user_input_score():
+    print("Tulis skor tryout SNBT terbaru. Apabila belum pernah tryout, maka isi angka 0.")
+    
+    questions = {
+        "PU": "Kemampuan Penalaran Umum:",
+        "PK": "Kemampuan Kuantitatif:",
+        "PPU": "Pengetahuan dan Pemahaman Umum:",
+        "PBM": "Pemahaman Bacaan dan Menulis:",
+        "LBI": "Literasi Bahasa Indonesia:",
+        "LBE": "Literasi Bahasa Inggris:",
+        "PM": "Penalaran Matematika:"
+    }
+
+    skor_tryout = {}
+    for key, prompt in questions.items():
+        while True:
+            try:
+                skor_tryout[key]= float(input(f"{prompt}"))
+                break
+            except:
+                print("Format skor salah. Silahkan ketik ulang.")
+    
+    return skor_tryout
+
+def check_input_score(skor_tryout):
+    assesment_link= "https://www.google.com"
+    if all(value == 0 for value in skor_tryout.values()):
+        tryout_now = input("Apakah kamu ingin mengerjakan tryout sekarang?(ya/tidak) ")
+        if tryout_now == "ya":
+            print(f"Silahkan kerjakan disini {assesment_link}")
+            return
+   
+
+    """sorted_skor_tryout = sorted(skor_tryout.items(), key=lambda value: value[1])"""
+
+def level_of_competence(skor_tryout, get_minimum_score):
+    red_interval = []
+    yellow_interval = []
+    green_interval = []
+    
+    interval_by_color = {
+        "red_interval":[], 
+        "yellow_interval": [],
+        "green_interval": []
+        }
+
+    for subtest, score in skor_tryout.items():
+        score_percentile = float((score/get_minimum_score) * 100)
+        if score_percentile <= 59.0 :
+            color = "RED"
+            red_interval.append(subtest)
+        elif score_percentile > 59.0 and score_percentile <= 89.0 :
+            color = "YELLOW"
+            yellow_interval.append(subtest)
+        else:
+            color = "GREEN"
+            green_interval.append(subtest)
+   
+def counts_days():    
+    date_str = input("Kapan kamu mau mulai belajar untuk persiapan SNBT? (Isi dengan format HH-BB-TT)")
+    try:
+        start_studying_date = datetime.strptime(date_str, "%d-%m-%Y")
+    except:
+        print("Format salah. Mohon tulis tanggal dengan format HH-BB-TT (contoh: 12-12-2025)")
+        return
+    
+    exam_period_str = "23-04-2026"
+    exam_period = datetime.strptime(exam_period_str, "%d-%m-%Y")
+
+    difference = exam_period - start_studying_date
+    day_difference = difference.days
+
+    print(f"Ada {day_difference} hari sebelum periode SNBT")
+    return day_difference
+
+def retention_interval(start_studying_date, day_difference):
+    interval_list= ["red_interval", "yellow_interval", "green_interval"]
+
+    red_interval = timedelta(days=int(0.1 * day_difference))
+    yellow_interval = timedelta(days=int(0.15 * counts_days))
+    green_interval = timedelta(days=int(0.2 * counts_days))
+
+    study_schedule = start_studying_date + timedelta(days=1) + interval_list
+
+    print("Berdasarkan skor try out dan target jurusan, maka kami merekomendasikan jadwal seperti ini:")
+
+if __name__ == '__main__':
+    main()
