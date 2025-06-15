@@ -1,0 +1,36 @@
+{
+"major_score": {
+    
+    "Universitas Indonesia": {
+
+        "Pendidikan Dokter": 752.14,
+        "Ilmu Komputer": 740.68,
+        "Kesehatan Masyarakat": 718.82,
+        "Farmasi": 722.53,
+        "Teknik Industri": 727.04,
+        "Sistem Informasi": 737.65,
+        "Ilmu Hukum": 743.82,
+        "Psikologi": 746.59,
+        "Manajemen": 741.80,
+        "Akuntansi": 737.88,
+        "Ilmu Komunikasi": 739.88,
+        "Ilmu Hubungan Internasional": 722.93
+
+        },
+
+    "Universitas Gadjah Mada" : {
+        "Kedokteran": 741.84,
+        "Ilmu Komputer": 733.46,
+        "Kedokteran Gigi": 736.25,
+        "Farmasi": 739.50,
+        "Ilmu Keperawatan": 726.59,
+        "Teknologi Informasi": 738.30,
+        "Hukum": 740.11,
+        "Psikologi": 743.48,
+        "Manajemen": 739.96,
+        "Akuntansi": 738.74,
+        "Ilmu Komunikasi": 737.42,
+        "Ilmu Hubungan Internasional": 736.76
+         }
+    }
+}

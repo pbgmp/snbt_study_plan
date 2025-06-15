@@ -1,0 +1,30 @@
+ {
+    "Universitas Indonesia": {
+        "Kedokteran": "Pendidikan Dokter",
+        "Komputer": "Ilmu Komputer",
+        "Ilmu Kesehatan Masyarakat": "Kesehatan Masyarakat",
+        "Farmasi": "Farmasi",
+        "Industri": "Teknik Industri",
+        "Teknologi Informasi": "Sistem Informasi",
+        "Hukum": "Ilmu Hukum",
+        "Ilmu Psikologi": "Psikologi",
+        "Manajemen": "Manajemen",
+        "Akuntansi": "Akuntansi",
+        "Komunikasi": "Ilmu Komunikasi",
+        "Hubungan Internasional": "Ilmu Hubungan Internasional"
+        },
+    "Universitas Gadjah Mada":{
+        "Pendidikan Dokter": "Kedokteran",
+        "Komputer": "Ilmu Komputer",
+        "Dokter Gigi": "Kedokteran Gigi",
+        "Farmasi": "Farmasi",
+        "Keperawatan": "Ilmu Keperawatan",
+        "Sistem Informasi": "Teknologi Informasi",
+        "Ilmu Hukum": "Hukum",
+        "Ilmu Psikologi": "Psikologi",
+        "Manajemen": "Manajemen",
+        "Akuntansi": "Akuntansi",
+        "Komunikasi": "Ilmu Komunikasi",
+        "Hubungan Internasional": "Ilmu Hubungan Internasional"
+        }
+}
